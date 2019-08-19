@@ -35,7 +35,7 @@ class StudentTests(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        self.student = StudentFactory()
+        cls.student = StudentFactory()
 
     def test_student_basic_info(self):
         student = self.student
@@ -59,7 +59,7 @@ class TeacherTests(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        self.teacher = TeacherFactory()
+        cls.teacher = TeacherFactory()
 
     def test_teacher_basic_info(self):
         teacher = self.teacher
