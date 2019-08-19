@@ -26,7 +26,7 @@ class Student(Person):
 
     Atribute
     --------
-    name : str
+    first_name : str
         first name of the student
     last_name : str
         last name or surname of the student
@@ -48,3 +48,32 @@ class Student(Person):
         Person.__init__(self, first_name, last_name)
         self.student_id = student_id
         self.classes = []
+
+
+class Teacher(Person):
+    """
+    Returns a ```Teacher``` object.
+
+    Atribute
+    --------
+    first_name : str
+        first name of the teacher
+    last_name : str
+        last name or surname of the teacher
+    teacher_id : str
+        unique identifier of a teacher
+
+    """
+    def __init__(self, first_name: str, last_name: str, teacher_id: str) -> None:
+        """
+        Parameters
+        ----------
+        first_name : str
+            first name of the teacher
+        last_name : str
+            last name or surname of the teacher
+        teacher_id : str
+            unique identifier of a teacher
+        """
+        Person.__init__(self, first_name, last_name)
+        self.teacher_id = teacher_id

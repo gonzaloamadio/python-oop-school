@@ -1,9 +1,8 @@
 import unittest
-
-from app.entities import Student
-
 import factory
-#from pytest_factoryboy import register
+
+from app.entities import Student, Teacher
+
 
 class StudentFactory(factory.Factory):
     '''Factory to create students.'''
@@ -22,7 +21,14 @@ class RandomStudentFactory(factory.Factory):
     last_name = factory.Faker('last_name')
     student_id = factory.Faker('student_id')
 
-#register(StudentFactory)
+class TeacherFactory(factory.Factory):
+    '''Factory to create students.'''
+    class Meta:
+        model = Teacher
+
+    first_name = 'John'
+    last_name = 'Doe'
+    teacher_id = 'JD1966'
 
 
 class StudentTests(unittest.TestCase):
@@ -33,4 +39,14 @@ class StudentTests(unittest.TestCase):
         self.assertEqual(student.last_name, 'Amadio')
         names = student.get_names()
         self.assertEqual(names, 'Gonzalo Amadio')
+
+
+class TeacherTests(unittest.TestCase):
+
+    def test_teacher_basic_info(self):
+        teacher = TeacherFactory()
+        self.assertEqual(teacher.first_name, 'John')
+        self.assertEqual(teacher.last_name, 'Doe')
+        names = teacher.get_names()
+        self.assertEqual(names, 'John Doe')
 
