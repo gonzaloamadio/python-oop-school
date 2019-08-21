@@ -1,38 +1,14 @@
 import factory
 from tests.utils import BaseTestCase
 
-from app.entities import Student, Teacher
-from tests.courses_test import (CourseFactory,
-                                RunningCourseFactory,
-                                DepartmentFactory)
+#from app.entities import Student, Teacher
+#from tests.courses_test import (CourseFactory,
+#                                CourseRunningFactory,
+#                                DepartmentFactory)
 
 
-class StudentFactory(factory.Factory):
-    '''Factory to create students.'''
-    class Meta:
-        model = Student
-
-    first_name = 'Gonzalo'
-    last_name = 'Amadio'
-    student_id = 'GA1988'
-
-class RandomStudentFactory(factory.Factory):
-    class Meta:
-        model = Student
-
-    first_name = factory.Faker('first_name')
-    last_name = factory.Faker('last_name')
-    student_id = factory.Faker('student_id')
-
-class TeacherFactory(factory.Factory):
-    '''Factory to create students.'''
-    class Meta:
-        model = Teacher
-
-    first_name = 'John'
-    last_name = 'Doe'
-    teacher_id = 'JD1966'
-
+from tests.factories import TeacherFactory, StudentFactory
+from tests.factories import DepartmentFactory, CourseFactory, CourseRunningFactory
 
 #class StudentTests(unittest.TestCase):
 class StudentTests(BaseTestCase):
@@ -61,12 +37,14 @@ class StudentTests(BaseTestCase):
 
     def test_student_can_enrol_to_course_running(self):
         student = self.student
-        course = RunningCourseFactory()
+        course = CourseRunningFactory()
         # Check if we can enrol to course
-        student.enrol(course.get_code())
+        student.enrol(course)
         # Check if after enrol, student was added to the course
         students_in_course = course.get_students()
         self.assertIn(student, students_in_course)
+        # Check if after enrol, course was added to student list of courses
+        self.assertIn(course.running_course_code, student.get_enroled_courses())
 
 class TeacherTests(BaseTestCase):
 
@@ -74,12 +52,20 @@ class TeacherTests(BaseTestCase):
     def setUpClass(cls):
         cls.teacher = TeacherFactory()
 
+    def test_department_has_attrs(self):
+        """Test: department has basic attributes."""
+        self.assertHasAttr(self.teacher, 'first_name')
+        self.assertHasAttr(self.teacher, 'last_name')
+        self.assertHasAttr(self.teacher, 'teacher_id')
+        self.assertHasAttr(self.teacher, 'classes')
+
     def test_teacher_basic_info(self):
         teacher = self.teacher
         self.assertEqual(teacher.first_name, 'John')
         self.assertEqual(teacher.last_name, 'Doe')
         names = teacher.get_names()
         self.assertEqual(names, 'John Doe')
+        self.assertEqual(teacher.classes, [])
 
     def test_teacher_has_courses(self):
         teacher = self.teacher
@@ -88,6 +74,6 @@ class TeacherTests(BaseTestCase):
 
     def test_teacher_teaches_running_course(self):
         teacher = self.teacher
-        course = RunningCourseFactory()
-        res = teacher.add_course_to_teach(course.get_code())
-        self.assertIsNotNone(res)
+        course = CourseRunningFactory()
+        teacher.add_course_to_teach(course.get_code())
+        self.assertIn(course.get_code(), teacher.get_teaching_courses())

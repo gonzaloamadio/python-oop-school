@@ -1,37 +1,11 @@
 import factory
 from tests.utils import BaseTestCase
 
-from app.courses import Course, Department, CourseRunning
+#from app.courses import Course, Department, CourseRunning
 
-from tests.entities_test import TeacherFactory, StudentFactory
-
-class DepartmentFactory(factory.Factory):
-    '''Factory to create departments.'''
-    class Meta:
-        model = Department
-
-    name = "Department of Mathematics"
-    department_code = "DEPOM"
-
-class CourseFactory(factory.Factory):
-    '''Factory to create courses.'''
-    class Meta:
-        model = Course
-
-    description = "Mathematics"
-    course_code = "MAT"
-    # department = factory.SubFactory(DepartmentFactory)
-    department = DepartmentFactory()
-
-class RunningCourseFactory(factory.Factory):
-    '''Factory to create courses that are running in a particular year.'''
-    class Meta:
-        model = RunningCourse
-
-    # course = factory.SubFactory(CourseFactory)
-    course = CourseFactory()
-    year = '2019'
-    running_course_code = "MAT_2019"
+# from tests.entities_test import TeacherFactory, StudentFactory
+from tests.factories import TeacherFactory, StudentFactory
+from tests.factories import DepartmentFactory, CourseFactory, CourseRunningFactory
 
 class DepartmentTests(BaseTestCase):
 
@@ -64,42 +38,43 @@ class DepartmentTests(BaseTestCase):
         department = self.department
         # Check if we can create a course
         res = department.add_course("Mathematics", "MAT")
-        course = CourseFactory()
-        self.assertEqual(course,res)
         # Check if the created course belong to this department
-        self.assertIn(res, department.get_courses())
+        self.assertIn(res.course_code, department.get_courses())
 
     def test_department_can_mark_course_as_running(self):
         """Test: Mark a course as running.
         A course can be a course as an idea, and also be teached some year.
         """
+        from app.courses import CourseRunning
         department = self.department
         course = CourseFactory()
         year = 2019
         crunning = department.mark_course_as_running(course, year)
         self.assertIsInstance(crunning, CourseRunning)
+        self.assertIn(crunning, course.get_runnings())
 
     def test_department_can_add_teacher_to_running_course(self):
         """Test: Assign a teacher to a running course."""
         department = self.department
-        crunning = RunningCourseFactory()
+        crunning = CourseRunningFactory()
         teacher = TeacherFactory()
-        department.asign_teacher_to_course(teacher, crunning)
+        department.assign_teacher_to_course(teacher, crunning)
         self.assertEqual(crunning.teacher, teacher)
+        self.assertIn(crunning.running_course_code, teacher.get_teaching_courses())
 
     def test_department_can_add_student_to_running_course(self):
         """Test: Add a student to a running course."""
         department = self.department
-        crunning = RunningCourseFactory()
+        crunning = CourseRunningFactory()
         student = StudentFactory()
         department.add_student_to_course(student, crunning)
         self.assertIn(student, crunning.students)
 
 
-class RunningCourseTests(BaseTestCase):
+class CourseRunningTests(BaseTestCase):
 
     def setUp(self):
-        self.running_course = RunningCourseFactory()
+        self.running_course = CourseRunningFactory()
 
     def test_running_course_has_attrs(self):
         """Test: running_course has basic attributes."""
@@ -113,25 +88,27 @@ class RunningCourseTests(BaseTestCase):
         """Test: running_course does not modify params on creation."""
         rc = self.running_course
         self.assertEqual(rc.year, '2019')
-        self.assertEqual(rc.course, CourseFactory())
+        # They point to different places. Should make a comparison attr by attr.
+        # self.assertEqual(rc.course, CourseFactory())
         # Check that students is created and empty
         self.assertFalse(rc.students)
         # Check that students is created and empty or None
         self.assertFalse(rc.teacher)
-        self.assertEqual(rc.running_course_code, "{}_{}".format(course_code, year))
+        c = CourseFactory()
+        self.assertEqual(rc.running_course_code, "{}_{}".format(c.course_code, '2019'))
 
     def test_running_course_year_is_number_in_string(self):
         """Test: the year passed as string is actually a number."""
-        self.assertTrue(int(self.running.year))
+        self.assertTrue(int(self.running_course.year))
 
     def test_running_course_can_add_students(self):
-        rc = cls.running_course
+        rc = self.running_course
         s = StudentFactory()
         rc.add_student(s)
         self.assertIn(s, rc.students)
 
     def test_running_course_can_add_teacher(self):
-        rc = cls.running_course
+        rc = self.running_course
         t = TeacherFactory()
         rc.add_teacher(t)
         self.assertEqual(t, rc.teacher)
@@ -139,7 +116,7 @@ class RunningCourseTests(BaseTestCase):
 
 class CourseTests(BaseTestCase):
 
-    def setUp(cls):
+    def setUp(self):
         self.course = CourseFactory()
 
     def test_course_has_attrs(self):
@@ -154,13 +131,16 @@ class CourseTests(BaseTestCase):
         c = self.course
         self.assertEqual(c.description, "Mathematics")
         self.assertEqual(c.course_code, "MAT")
-        self.assertEqual(c.department, DepartmentFactory())
+        # Point to different objects. Should compare differently.
+        # self.assertEqual(c.department, DepartmentFactory())
         # Check that runnings is created and empty
         self.assertFalse(c.runnings)
 
     def test_course_can_add_course_running(self):
         crunning = self.course.add_running('2019')
-        self.assertEqual(crunning, RunningCourseFactory())
+        # Point to different objects. Should compare differently.
+        # self.assertEqual(crunning, CourseRunningFactory())
+        self.assertIn(crunning, self.course.get_runnings())
 
 
 if __name__ == '__main__':
