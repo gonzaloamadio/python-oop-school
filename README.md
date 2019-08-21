@@ -23,7 +23,7 @@ for their classes
 
 `Python 3.5+`
 
-### Create virtual env and install packages
+### Create virtual env 
 
 ```
 $ sudo apt-get install python3.6
@@ -35,13 +35,24 @@ $ source ~/.bashrc
 $ mkvirtualenv --python=python3.6 classroom
 ```
 
+### Clone project and configure
+
+
 ```
-pip install -r requirements.txt
+$ git clone https://github.com/gonzaloamadio/python-oop-school.git classroom
+$ pip install -r requirements.txt
 ```
 
 Test that pytest is installed:
 
 ```
-pytest --version
+$ pytest --version
 This is pytest version 5.1.0, imported from /home/gonzalo/.virtualenvs/classroom/lib/python3.6/site-packages/pytest.py
 ```
+
+### Run tests
+
+```
+$ cd classroom
+$ pytest
+````
