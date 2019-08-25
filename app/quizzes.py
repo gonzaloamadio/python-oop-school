@@ -53,9 +53,6 @@ class Question:
             raise AnswerPositionOverflow("Choices can be between 1 and 4")
         self._correct_answer = num
 
-    def foofoo(self, papa):
-        pass
-
     def add_possible_answer(self, answer, position, is_correct):
         """Add a possible answer in a position (1, 2, 3, 4)."""
         if not (0 < position <= 4):
@@ -64,6 +61,10 @@ class Question:
             self.possible_answers[position] = answer
             self.correct_answer =  position
             return True
+
+    def is_answer_correct(self, answer):
+        return answer == self.correct_answer
+
 
 class Quiz:
     """Represents a quiz.
@@ -77,7 +78,7 @@ class Quiz:
         answer of a question
     question : Question
         questions that make this quiz
-    is_finished : bool
+    _is_finished : bool
         is the quizz finished?
     """
     def __init__(self, quiz_id, teacher, name):
@@ -85,12 +86,15 @@ class Quiz:
         self.teacher = teacher
         self.name = name
         self.questions = []
-        # TODO: Make read only
-        self.is_finished = False
+        self._is_finished = False
+
+    @property
+    def is_finished(self):
+        return self._is_finished
 
     def add_question(self, q: Question) -> None:
         self.questions.append(q)
-        self.is_finished = False
+        self._is_finished = False
 
     def _is_quiz_finished(self) -> bool:
         # Check if there is a question that is not answered
@@ -103,14 +107,13 @@ class Quiz:
         if question is None or self.is_finished:
             raise QuizFinishedException('Quiz is already finished')
         # If answer matches the correct option, mark as answered ok.
-        # TODO: Change for function with exception
-        if answer == question.correct_answer:
+        if question.is_answer_correct(answer):
             question.is_answered_correct = True
         # Mark question as answered
         question.is_answered = True
         # If there is no more unanswered questions
         if not self._is_quiz_finished():
-            self.is_finished = True
+            self._is_finished = True
 
     def get_score(self):
         if not self.questions:

@@ -58,10 +58,9 @@ class QuizTests(BaseTestCase):
         quiz.answer_next_question(1)
         self.assertEqual(quiz.is_finished, True)
 
-    def test_quiz_cannot_be_answered_if_finished(self):
+    def test_quiz_cannot_be_answered_if_finished_or_empty(self):
         '''If a quiz is finished, we cannot answer it again.'''
         quiz = self.quiz
-        quiz.is_finished = True
         with self.assertRaises(QuizFinishedException) as e:
             quiz.answer_next_question(2)
         self.assertEqual(str(e.exception), 'Quiz is already finished')
