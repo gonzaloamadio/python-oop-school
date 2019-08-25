@@ -1,22 +1,23 @@
 """Define classes related with courses.
 
-A Department has courses, can create them, can set them as running for actual year.
-They are the responsable for the business logic of courses.
+A Department has courses, can create them, can set them as running for actual
+year. They are the responsable for the business logic of courses.
 
-A Course is offered by one Department (every year), has always same name and code.
+A Course is offered by one Department (every year), always same name and code.
 
-A RunningCourse, is a course that is actually given a particular year. Each time
-they have a list of enrolled students
+A RunningCourse, is a course that is actually given a particular year.
+Each time they have a list of enrolled students
 
 ASSUMPTIONS:
     A course can be created through a department.
     A course can be running only once a year.
 
-    There are no functions to mark course as finished, and more functionalities.
+    There are no functions to mark course as finished, and more functionalities
     Checks, and how information is related are not comprehensive comparing with
     reality, and much more things can be done.
     I consider them out of scope of the exercise.
 """
+
 
 class Department:
     def __init__(self, name, department_code):
@@ -52,12 +53,13 @@ class Department:
         # add_running returns a Courserunning
         return course.add_running(year)
 
+
 class Course:
     def __init__(self, description, course_code, department):
         self.description = description
         self.course_code = course_code
         self.department = department
-        #self.department.add_course(self)
+        # self.department.add_course(self)
         self.runnings = []
 
     def add_running(self, year):
@@ -92,7 +94,7 @@ class CourseRunning:
         self.students = []
 
     def add_student(self, student):
-        """Add a student to the students that assist to this specific course."""
+        """Add a student to the students that assist to this specific course"""
         self.students.append(student)
 
     def assign_teacher(self, teacher):

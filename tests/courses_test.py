@@ -1,15 +1,16 @@
 """Tests related with entities belonging to a school."""
 
-import factory
+from tests.factories import (
+    CourseFactory,
+    CourseRunningFactory,
+    DepartmentFactory,
+    StudentFactory,
+    TeacherFactory,
+)
 from tests.utils import BaseTestCase
 
-#from app.courses import Course, Department, CourseRunning
-
-from tests.factories import TeacherFactory, StudentFactory
-from tests.factories import DepartmentFactory, CourseFactory, CourseRunningFactory
 
 class DepartmentTests(BaseTestCase):
-
     def setUp(self):
         self.department = DepartmentFactory()
 
@@ -47,6 +48,7 @@ class DepartmentTests(BaseTestCase):
         A course can be a course as an idea, and also be teached some year.
         """
         from app.courses import CourseRunning
+
         department = self.department
         course = CourseFactory()
         year = 2019
@@ -73,7 +75,6 @@ class DepartmentTests(BaseTestCase):
 
 
 class CourseRunningTests(BaseTestCase):
-
     def setUp(self):
         self.running_course = CourseRunningFactory()
 
@@ -89,7 +90,7 @@ class CourseRunningTests(BaseTestCase):
         """Test: running_course does not modify params on creation."""
         rc = self.running_course
         self.assertEqual(rc.year, '2019')
-        # They point to different places. Should make a comparison attr by attr.
+        # They point to different places. Should make a comparison attr by attr
         # self.assertEqual(rc.course, CourseFactory())
         # Check that students is created and empty
         self.assertFalse(rc.students)
@@ -102,11 +103,11 @@ class CourseRunningTests(BaseTestCase):
         """Test: the year passed as string is actually a number."""
         self.assertTrue(int(self.running_course.year))
 
-#    def test_running_course_can_add_students(self):
-#        rc = self.running_course
-#        s = StudentFactory()
-#        rc.add_student(s)
-#        self.assertIn(s, rc.students)
+    #    def test_running_course_can_add_students(self):
+    #        rc = self.running_course
+    #        s = StudentFactory()
+    #        rc.add_student(s)
+    #        self.assertIn(s, rc.students)
 
     def test_running_course_can_add_teacher(self):
         rc = self.running_course
@@ -116,7 +117,6 @@ class CourseRunningTests(BaseTestCase):
 
 
 class CourseTests(BaseTestCase):
-
     def setUp(self):
         self.course = CourseFactory()
 
@@ -145,4 +145,5 @@ class CourseTests(BaseTestCase):
 
 
 if __name__ == '__main__':
+    import unittest
     unittest.main()

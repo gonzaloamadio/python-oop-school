@@ -16,14 +16,16 @@ ASSUMPTIONS:
     I assumed that the grade of the students is the sum of the grades of the
     quizzes they have completed.
 """
-from app.exceptions import QuizFinishedException
+from app.exceptions import QuizFinishedException, SemesterNotFound
 from app.utils import get_semester_id
+
 
 class Person(object):
     """
     Returns a ```Person``` object with given name.
 
     """
+
     def __init__(self, first_name: str, last_name: str) -> None:
         self.first_name = first_name
         self.last_name = last_name
@@ -50,7 +52,10 @@ class Student(Person):
     quizzes : list[Quiz]
         list of quizzes this student has answered to.
     """
-    def __init__(self, first_name: str, last_name: str, student_id: str, *args, **kwargs) -> None:
+
+    def __init__(
+        self, first_name: str, last_name: str, student_id: str, *args, **kwargs
+    ) -> None:
         """
         Parameters
         ----------
@@ -64,7 +69,7 @@ class Student(Person):
         Person.__init__(self, first_name, last_name)
         self.student_id = student_id
         self.classes = []
-        # Will have the following shape : {'<semester_id>' : {'<quiz_id>': Quiz}}
+        # Will have the following shape : {'<semester_id>':{'<quiz_id>': Quiz}}
         self.quizzes = {}
 
     def get_enroled_courses(self):
@@ -79,14 +84,14 @@ class Student(Person):
         quiz.add_student(self)
         semester = get_semester_id()
         # If semester's key is not created, do it, and add quizz.
-        self.quizzes.setdefault(semester,{})[quiz.quiz_id] = quiz
+        self.quizzes.setdefault(semester, {})[quiz.quiz_id] = quiz
 
     def answer_quizz(self, quiz_id, answer):
         """Answer a quizz for this semester."""
         quiz = self.quizzes[quiz_id]
         try:
             quiz.answer_next_question(answer)
-        except QuizzFinishedException as err:
+        except QuizFinishedException as err:
             return str(err)
 
     def get_score_for_semester(self, semester_id):
@@ -97,6 +102,7 @@ class Student(Person):
         for qid in semester:
             score += semester[qid].get_score()
         return score
+
 
 class Teacher(Person):
     """
@@ -113,6 +119,7 @@ class Teacher(Person):
     classes : list[str]
         list of running courses codes that the teacher is teaching in.
     """
+
     def __init__(self, first_name: str, last_name: str, teacher_id: str) -> None:
         """
         Parameters

@@ -1,7 +1,7 @@
-
 import datetime
 
 datetime.datetime.now().month
+
 
 def get_semester_id():
     semester = 1 if datetime.datetime.now().month <= 6 else 2

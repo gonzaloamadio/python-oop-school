@@ -1,17 +1,16 @@
 """Test related with quizzes."""
 
-import factory
-from tests.utils import BaseTestCase
-
 from app.entities import Teacher
 from app.exceptions import AnswerPositionOverflow, QuizFinishedException
-from tests.factories import TeacherFactory, StudentFactory
-from tests.factories import DepartmentFactory, CourseFactory, CourseRunningFactory
-from tests.factories import QuizFactory, QuestionFactory, RandomQuestionFactory
+from tests.factories import (
+    QuestionFactory,
+    QuizFactory,
+    RandomQuestionFactory,
+)
+from tests.utils import BaseTestCase
 
 
 class QuizTests(BaseTestCase):
-
     def setUp(self):
         self.quiz = QuizFactory()
 
@@ -69,18 +68,18 @@ class QuizTests(BaseTestCase):
         quiz = self.quiz
         self.assertEqual(quiz.get_score(), 0)
         q1 = RandomQuestionFactory()
-        q1.add_possible_answer('2',1, True)
+        q1.add_possible_answer('2', 1, True)
         quiz.add_question(q1)
         quiz.answer_next_question(1)
         self.assertEqual(quiz.get_score(), 100)
         q2 = RandomQuestionFactory()
-        q2.add_possible_answer('2',1, True)
+        q2.add_possible_answer('2', 1, True)
         quiz.add_question(q2)
         quiz.answer_next_question(2)
         self.assertEqual(quiz.get_score(), 50)
 
-class QuestionTests(BaseTestCase):
 
+class QuestionTests(BaseTestCase):
     def setUp(self):
         self.question = QuestionFactory()
 

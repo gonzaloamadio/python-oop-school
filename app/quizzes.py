@@ -5,12 +5,13 @@ ASSUMPTIONS:
     Names of quizes are unique.
     Quizzes are created by one teacher.
     There are always 4 choices in the questions, and 1 correct answer.
-    When take a quiz, student can answer questions in order. Can not take a quizz
+    When take a quiz, student can answer questions in order.Can not take a quiz
     again if it is finished.
-    Question is the set of question and possible answers. Could be more granular.
+    Question is the set of question and possible answers.Could be more granular
 """
-from collections import namedtuple
-from app.exceptions import QuizFinishedException, AnswerPositionOverflow
+
+from app.exceptions import AnswerPositionOverflow, QuizFinishedException
+
 
 class Question:
     """Question. A question belong to a quiz.
@@ -47,11 +48,11 @@ class Question:
     def correct_answer(self):
         return self._correct_answer
 
-#    @correct_answer.setter
-#    def correct_answer(self, num):
-#        if not (0 < num <= 4):
-#            raise AnswerPositionOverflow("Choices can be between 1 and 4")
-#        self._correct_answer = num
+    #    @correct_answer.setter
+    #    def correct_answer(self, num):
+    #        if not (0 < num <= 4):
+    #            raise AnswerPositionOverflow("Choices can be between 1 and 4")
+    #        self._correct_answer = num
 
     def add_possible_answer(self, answer, position, is_correct):
         """Add a possible answer in a position (1, 2, 3, 4)."""
@@ -59,7 +60,7 @@ class Question:
             raise AnswerPositionOverflow("Position must be between 1 and 4")
         else:
             self.possible_answers[position] = answer
-            self._correct_answer =  position
+            self._correct_answer = position
             return True
 
     def is_answer_correct(self, answer):
@@ -81,6 +82,7 @@ class Quiz:
     _is_finished : bool
         is the quizz finished?
     """
+
     def __init__(self, quiz_id, teacher, name):
         self.quiz_id = quiz_id
         self.teacher = teacher
@@ -98,12 +100,12 @@ class Quiz:
 
     def _is_quiz_finished(self) -> bool:
         # Check if there is a question that is not answered
-        question = next((q for q in self.questions if q.is_answered == False), None)
-        return question != None
+        question = next((q for q in self.questions if q.is_answered is False), None)
+        return question is not None
 
     def answer_next_question(self, answer: int) -> None:
         # Get first question not answered, we can continue an unifinished quizz
-        question = next((q for q in self.questions if q.is_answered == False), None)
+        question = next((q for q in self.questions if q.is_answered is False), None)
         if question is None or self.is_finished:
             raise QuizFinishedException('Quiz is already finished')
         # If answer matches the correct option, mark as answered ok.

@@ -5,9 +5,10 @@ class QuizException(Exception):
 class QuizFinishedException(QuizException):
     pass
 
+
 class AnswerPositionOverflow(QuizException):
     pass
 
+
 class SemesterNotFound(QuizException):
     pass
-
