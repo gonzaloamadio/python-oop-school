@@ -1,3 +1,5 @@
+"""Tests related with entities belonging to a school."""
+
 import factory
 from tests.utils import BaseTestCase
 
@@ -110,7 +112,7 @@ class CourseRunningTests(BaseTestCase):
     def test_running_course_can_add_teacher(self):
         rc = self.running_course
         t = TeacherFactory()
-        rc.add_teacher(t)
+        rc.assign_teacher(t)
         self.assertEqual(t, rc.teacher)
 
 

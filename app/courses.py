@@ -25,19 +25,26 @@ class Department:
         self.courses = {}
 
     def add_course(self, description, course_code):
+        """Add course to this department.
+
+        A course is strongly coupled to a department. And a department is in
+        charge of managing the course.
+        """
         self.courses[course_code] = Course(description, course_code, self)
         return self.courses[course_code]
 
     def get_courses(self):
+        """Return courses belonging to this department."""
         return self.courses
 
     @staticmethod
     def add_student_to_course(student, running_course):
+        """ ."""
         running_course.add_student(student)
 
     @staticmethod
     def assign_teacher_to_course(teacher, running_course):
-        running_course.add_teacher(teacher)
+        running_course.assign_teacher(teacher)
         teacher.add_course_to_teach(running_course.running_course_code)
 
     @staticmethod
@@ -71,6 +78,7 @@ class Course:
         return self.runnings[-1]
 
     def get_runnings(self):
+        """Return the list of classes that are or were teached."""
         return self.runnings
 
 
@@ -84,13 +92,17 @@ class CourseRunning:
         self.students = []
 
     def add_student(self, student):
+        """Add a student to the students that assist to this specific course."""
         self.students.append(student)
 
-    def add_teacher(self, teacher):
+    def assign_teacher(self, teacher):
+        """Assign a teacher to this specific course."""
         self.teacher = teacher
 
     def get_students(self):
+        """Return students assisting to this specific course."""
         return self.students
 
     def get_code(self):
+        """Get code of this specific course."""
         return self.running_course_code
