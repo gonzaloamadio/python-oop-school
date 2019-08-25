@@ -107,5 +107,6 @@ class QuestionTests(BaseTestCase):
         # Add answer, in a position, is it correct?
         q.add_possible_answer('2', 1, True)
         # We assume to have only 4 choices.
-        with self.assertRaises(AnswerPositionOverflow)
+        with self.assertRaises(AnswerPositionOverflow) as e:
             q.add_possible_answer('3', 5, True)
+        self.assertEqual(str(e.exception), 'Position must be between 1 and 4')
