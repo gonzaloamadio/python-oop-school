@@ -45,7 +45,6 @@ class QuizTests(BaseTestCase):
         '''Test if there is a function to answer next question.'''
         quiz = self.quiz
         q1 = RandomQuestionFactory()
-        q1.correct_answer = 1
         quiz.add_question(q1)
         quiz.answer_next_question(1)
 
@@ -53,7 +52,7 @@ class QuizTests(BaseTestCase):
         '''Test if a quiz is flagged as finished when there are no more questions to answer.'''
         quiz = self.quiz
         q1 = RandomQuestionFactory()
-        q1.correct_answer = 1
+        # q1.correct_answer = 1
         quiz.add_question(q1)
         quiz.answer_next_question(1)
         self.assertEqual(quiz.is_finished, True)
@@ -70,12 +69,12 @@ class QuizTests(BaseTestCase):
         quiz = self.quiz
         self.assertEqual(quiz.get_score(), 0)
         q1 = RandomQuestionFactory()
-        q1.correct_answer = 1
+        q1.add_possible_answer('2',1, True)
         quiz.add_question(q1)
         quiz.answer_next_question(1)
         self.assertEqual(quiz.get_score(), 100)
         q2 = RandomQuestionFactory()
-        q2.correct_answer = 1
+        q2.add_possible_answer('2',1, True)
         quiz.add_question(q2)
         quiz.answer_next_question(2)
         self.assertEqual(quiz.get_score(), 50)

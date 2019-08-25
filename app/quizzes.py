@@ -47,11 +47,11 @@ class Question:
     def correct_answer(self):
         return self._correct_answer
 
-    @correct_answer.setter
-    def correct_answer(self, num):
-        if not (0 < num <= 4):
-            raise AnswerPositionOverflow("Choices can be between 1 and 4")
-        self._correct_answer = num
+#    @correct_answer.setter
+#    def correct_answer(self, num):
+#        if not (0 < num <= 4):
+#            raise AnswerPositionOverflow("Choices can be between 1 and 4")
+#        self._correct_answer = num
 
     def add_possible_answer(self, answer, position, is_correct):
         """Add a possible answer in a position (1, 2, 3, 4)."""
@@ -59,7 +59,7 @@ class Question:
             raise AnswerPositionOverflow("Position must be between 1 and 4")
         else:
             self.possible_answers[position] = answer
-            self.correct_answer =  position
+            self._correct_answer =  position
             return True
 
     def is_answer_correct(self, answer):
