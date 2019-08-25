@@ -5,7 +5,6 @@ from tests.utils import BaseTestCase
 
 #from app.courses import Course, Department, CourseRunning
 
-# from tests.entities_test import TeacherFactory, StudentFactory
 from tests.factories import TeacherFactory, StudentFactory
 from tests.factories import DepartmentFactory, CourseFactory, CourseRunningFactory
 
@@ -103,11 +102,11 @@ class CourseRunningTests(BaseTestCase):
         """Test: the year passed as string is actually a number."""
         self.assertTrue(int(self.running_course.year))
 
-    def test_running_course_can_add_students(self):
-        rc = self.running_course
-        s = StudentFactory()
-        rc.add_student(s)
-        self.assertIn(s, rc.students)
+#    def test_running_course_can_add_students(self):
+#        rc = self.running_course
+#        s = StudentFactory()
+#        rc.add_student(s)
+#        self.assertIn(s, rc.students)
 
     def test_running_course_can_add_teacher(self):
         rc = self.running_course

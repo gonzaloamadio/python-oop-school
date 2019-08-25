@@ -12,7 +12,13 @@ ASSUMPTIONS:
     Could be improved by having a hierarchy of courses, or another
     implementation of which courses can students enroll, but I think is out of
     scope of this exercise.
+
+    I assumed that the grade of the students is the sum of the grades of the
+    quizzes they have completed.
 """
+from app.exceptions import QuizFinishedException
+from app.utils import get_semester_id
+
 class Person(object):
     """
     Returns a ```Person``` object with given name.
@@ -41,9 +47,10 @@ class Student(Person):
         unique identifier of a student
     classes : list[str]
         list of running courses codes that a student is enroled in.
-
+    quizzes : list[Quiz]
+        list of quizzes this student has answered to.
     """
-    def __init__(self, first_name: str, last_name: str, student_id: str) -> None:
+    def __init__(self, first_name: str, last_name: str, student_id: str, *args, **kwargs) -> None:
         """
         Parameters
         ----------
@@ -57,6 +64,8 @@ class Student(Person):
         Person.__init__(self, first_name, last_name)
         self.student_id = student_id
         self.classes = []
+        # Will have the following shape : {'<semester_id>' : {'<quiz_id>': Quiz}}
+        self.quizzes = {}
 
     def get_enroled_courses(self):
         return self.classes
@@ -66,7 +75,28 @@ class Student(Person):
         self.classes.append(course_running.running_course_code)
         course_running.add_student(self)
 
+    def subscribe_to_quizz(self, quiz):
+        quiz.add_student(self)
+        semester = get_semester_id()
+        # If semester's key is not created, do it, and add quizz.
+        self.quizzes.setdefault(semester,{})[quiz.quiz_id] = quiz
 
+    def answer_quizz(self, quiz_id, answer):
+        """Answer a quizz for this semester."""
+        quiz = self.quizzes[quiz_id]
+        try:
+            quiz.answer_next_question(answer)
+        except QuizzFinishedException as err:
+            return str(err)
+
+    def get_score_for_semester(self, semester_id):
+        semester = self.quizzes.get(semester_id, None)
+        if not semester:
+            raise SemesterNotFound('The semester was not found.')
+        score = 0
+        for qid in semester:
+            score += semester[qid].get_score()
+        return score
 
 class Teacher(Person):
     """

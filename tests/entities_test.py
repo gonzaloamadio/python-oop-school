@@ -21,8 +21,8 @@ class StudentTests(BaseTestCase):
         self.assertHasAttr(self.student, 'first_name')
         self.assertHasAttr(self.student, 'last_name')
         self.assertHasAttr(self.student, 'student_id')
-        self.assertHasAttr(self.classes, 'classes')
-        self.assertHasAttr(self.quizzes, 'quizzes')
+        self.assertHasAttr(self.student, 'classes')
+        self.assertHasAttr(self.student, 'quizzes')
 
     def test_student_basic_info(self):
         student = self.student
@@ -32,7 +32,7 @@ class StudentTests(BaseTestCase):
         names = student.get_names()
         self.assertEqual(names, 'Gonzalo Amadio')
         self.assertEqual(student.classes, [])
-        self.assertEqual(student.quizzes, [])
+        self.assertEqual(student.quizzes, {})
 
     def test_student_has_courses(self):
         student = self.student

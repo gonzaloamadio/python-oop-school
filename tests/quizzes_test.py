@@ -4,6 +4,7 @@ import factory
 from tests.utils import BaseTestCase
 
 from app.entities import Teacher
+from app.exceptions import AnswerPositionOverflow, QuizFinishedException
 from tests.factories import TeacherFactory, StudentFactory
 from tests.factories import DepartmentFactory, CourseFactory, CourseRunningFactory
 from tests.factories import QuizFactory, QuestionFactory, RandomQuestionFactory
@@ -61,7 +62,7 @@ class QuizTests(BaseTestCase):
         '''If a quiz is finished, we cannot answer it again.'''
         quiz = self.quiz
         quiz.is_finished = True
-        with self.assertRaises(QuizzFinishedException) as e:
+        with self.assertRaises(QuizFinishedException) as e:
             quiz.answer_next_question(2)
         self.assertEqual(str(e.exception), 'Quiz is already finished')
 
@@ -88,7 +89,7 @@ class QuestionTests(BaseTestCase):
     def test_question_has_attrs(self):
         '''Test: question has basic attributes.'''
         self.assertHasAttr(self.question, 'text')
-        self.assertHasAttr(self.question, 'correct_answer')
+        self.assertHasAttr(self.question, '_correct_answer')
         self.assertHasAttr(self.question, 'possible_answers')
         self.assertHasAttr(self.question, 'is_answered')
         self.assertHasAttr(self.question, 'is_answered_correct')
@@ -96,17 +97,17 @@ class QuestionTests(BaseTestCase):
     def test_question_params_on_creation(self):
         '''Test: question does not modify params on creation.'''
         self.assertEqual(self.question.text, 'How much is 1 + 1?')
-        self.assertEqual(self.question.correct_answer, 1)
-        self.assertIsInstance(self.question.possible_answers, [])
+        self.assertEqual(self.question._correct_answer, 1)
+        self.assertEqual(len(self.question.possible_answers), 4)
         self.assertEqual(self.question.is_answered, False)
         self.assertEqual(self.question.is_answered_correct, False)
 
     def test_question_can_add_a_possible_answer(self):
         '''Add an answer to the multiple choice of this question.'''
-        q = self.question
+        question = self.question
         # Add answer, in a position, is it correct?
-        q.add_possible_answer('2', 1, True)
+        question.add_possible_answer('2', 1, True)
         # We assume to have only 4 choices.
         with self.assertRaises(AnswerPositionOverflow) as e:
-            q.add_possible_answer('3', 5, True)
+            question.add_possible_answer('3', 5, True)
         self.assertEqual(str(e.exception), 'Position must be between 1 and 4')
