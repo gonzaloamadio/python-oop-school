@@ -89,11 +89,11 @@ class Student(Person):
         self.classes.append(course_running.running_course_code)
         course_running.add_student(self)
 
-    def subscribe_to_quizz(self, quiz: 'Quiz') -> None:
+    def subscribe_to_quiz(self, quiz: 'Quiz') -> None:
         """Given a quiz, subscribe this user to it."""
         # quiz.add_student(self)
         semester = get_semester_id()
-        # If semester's key is not created, do it, and add quizz.
+        # If semester's key is not created, do it, and add quiz.
         self.quizzes.setdefault(semester, {})[quiz.quiz_id] = quiz
 
     # def _get_semester_quizzes(self, semester_id: str) -> Union[QuizInfo, NoReturn]:
@@ -115,8 +115,8 @@ class Student(Person):
             raise SemesterNotFound('The semester was not found.')
         return current_semester_quiz_info
 
-    def answer_quizz(self, quiz_id: str, answer: int) -> str:
-        """Answer a quizz for this semester."""
+    def answer_quiz(self, quiz_id: str, answer: int) -> str:
+        """Answer a quiz for this semester."""
         try:
             current_quizzes = self._get_semester_quizzes(get_semester_id())
         except SemesterNotFound:
@@ -196,3 +196,11 @@ class Teacher(Person):
 
     def create_quiz(self, qid: str, name: str) -> 'Quiz':
         return Quiz(qid, self, name)
+
+    @staticmethod
+    def assign_quiz_to_student(student: Student, quiz: 'Quiz') -> None:
+        student.subscribe_to_quiz(quiz)
+
+    @staticmethod
+    def calc_student_grade_for_semester(student: Student, semester_id: str = None) -> Union[str,float]:
+        return student.get_score_for_semester(semester_id)

@@ -51,24 +51,24 @@ class StudentTests(BaseTestCase):
         # Check if after enrol, course was added to student list of courses
         self.assertIn(course.running_course_code, student.get_enroled_courses())
 
-    def test_student_can_subscribe_to_quizz(self):
+    def test_student_can_subscribe_to_quiz(self):
         quiz = QuizFactory()
-        self.student.subscribe_to_quizz(quiz)
+        self.student.subscribe_to_quiz(quiz)
 
-    def test_student_can_answer_quizz(self):
+    def test_student_can_answer_quiz(self):
         student = self.student
-        res = student.answer_quizz('non_existent', 1)
+        res = student.answer_quiz('non_existent', 1)
         assert res == "You are not subscribed to this quiz in current semester"
         quiz = QuizFactory()
         question = QuestionFactory()
         question.add_possible_answer('2', 1, True)
         quiz.add_question(question)
-        student.subscribe_to_quizz(quiz)
-        res = student.answer_quizz(quiz.quiz_id, 1)
+        student.subscribe_to_quiz(quiz)
+        res = student.answer_quiz(quiz.quiz_id, 1)
         assert res == "Ok"
-        res = student.answer_quizz('not_existent', 1)
+        res = student.answer_quiz('not_existent', 1)
         assert res == "Quiz not defined"
-        res = student.answer_quizz(quiz.quiz_id, 1)
+        res = student.answer_quiz(quiz.quiz_id, 1)
         assert res == "Quiz already finished"
 
     def test_student_can_get_score_for_semester(self):
@@ -79,8 +79,8 @@ class StudentTests(BaseTestCase):
         question = QuestionFactory()
         question.add_possible_answer('2', 1, True)
         quiz.add_question(question)
-        student.subscribe_to_quizz(quiz)
-        student.answer_quizz(quiz.quiz_id, 1)
+        student.subscribe_to_quiz(quiz)
+        student.answer_quiz(quiz.quiz_id, 1)
         res = student.get_score_for_semester()
         assert res == 100.00
 
@@ -123,3 +123,18 @@ class TeacherTests(BaseTestCase):
         q = self.teacher.create_quiz('myid', 'Math quiz')
         self.assertIsInstance(q, Quiz)
 
+    def test_teacher_can_assign_quiz(self):
+        q = QuizFactory()
+        s = StudentFactory()
+        self.teacher.assign_quiz_to_student(s,q)
+
+    def test_teacher_can_calculate_students_grade_for_semester(self):
+        s = StudentFactory()
+        quiz = QuizFactory()
+        question = QuestionFactory()
+        question.add_possible_answer('2', 1, True)
+        quiz.add_question(question)
+        self.teacher.assign_quiz_to_student(s,quiz)
+        s.answer_quiz(quiz.quiz_id, 1)
+        res = self.teacher.calc_student_grade_for_semester(s)
+        assert res == 100.00
