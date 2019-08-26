@@ -55,4 +55,10 @@ This is pytest version 5.1.0, imported from /home/gonzalo/.virtualenvs/classroom
 ```
 $ cd classroom
 $ pytest --cov=classroom
-````
+```
+
+### Run type check
+
+```
+$ mypy app/
+```
