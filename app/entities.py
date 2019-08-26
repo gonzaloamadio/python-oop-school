@@ -18,12 +18,13 @@ ASSUMPTIONS:
 """
 from classroom.app.exceptions import QuizFinishedException, SemesterNotFound
 from classroom.app.utils import get_semester_id
-from classroom.app.quizzes import Quiz
-from classroom.app.courses import CourseRunning
-from typing import List, Dict, NoReturn, Union
-Classes = List[str]
-QuizInfo = Dict[str, Quiz]
-Quizzes = Dict[str, QuizInfo]
+from typing import List, Dict, NoReturn, Union, TYPE_CHECKING
+if TYPE_CHECKING:
+    from classroom.app.quizzes import Quiz
+    from classroom.app.courses import CourseRunning
+    QuizInfo = Dict[str, Quiz]
+    Quizzes = Dict[str, QuizInfo]
+    Classes = List[str]
 
 
 class Person(object):
@@ -74,28 +75,28 @@ class Student(Person):
         """
         Person.__init__(self, first_name, last_name)
         self.student_id = student_id
-        self.classes: Classes = []
+        self.classes: 'Classes' = []
         # Will have the following shape : {'<semester_id>':{'<quiz_id>': Quiz}}
-        self.quizzes: Quizzes = {}
+        self.quizzes: 'Quizzes' = {}
 
-    def get_enroled_courses(self) -> Classes:
+    def get_enroled_courses(self) -> 'Classes':
         """Get courses this student is enroled to."""
         return self.classes
 
-    def enrol(self, course_running: CourseRunning) -> None:
+    def enrol(self, course_running: 'CourseRunning') -> None:
         """Add course to courses that the student is enroled in."""
         self.classes.append(course_running.running_course_code)
         course_running.add_student(self)
 
-    def subscribe_to_quizz(self, quiz: Quiz) -> None:
+    def subscribe_to_quizz(self, quiz: 'Quiz') -> None:
         """Given a quiz, subscribe this user to it."""
-        quiz.add_student(self)
+        # quiz.add_student(self)
         semester = get_semester_id()
         # If semester's key is not created, do it, and add quizz.
         self.quizzes.setdefault(semester, {})[quiz.quiz_id] = quiz
 
     # def _get_semester_quizzes(self, semester_id: str) -> Union[QuizInfo, NoReturn]:
-    def _get_semester_quizzes(self, semester_id: str) -> QuizInfo:
+    def _get_semester_quizzes(self, semester_id: str) -> 'QuizInfo':
         """Given a semester id, return an object:  {quiz_id : Quiz}.
 
         Raises
@@ -127,7 +128,7 @@ class Student(Person):
             return str(err)
         return None
 
-    def get_score_for_semester(self, semester_id: str) ->  int:
+    def get_score_for_semester(self, semester_id: str) ->  float:
         """Given a semester_id, get score for that semester.
 
         Raises
@@ -141,7 +142,7 @@ class Student(Person):
             Score calculation for all quizzes of the semester.
         """
         current_quizzes = self._get_semester_quizzes(semester_id)
-        score = 0
+        score = 0.0
         for qid in current_quizzes:
             score += current_quizzes[qid].get_score()
         return score
@@ -176,7 +177,7 @@ class Teacher(Person):
         """
         Person.__init__(self, first_name, last_name)
         self.teacher_id = teacher_id
-        self.classes: Classes = []
+        self.classes: 'Classes' = []
 
     def add_course_to_teach(self, course_code):
         """Add running course to courses that the teacher is teaching in."""

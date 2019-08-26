@@ -11,8 +11,9 @@ ASSUMPTIONS:
 """
 
 from classroom.app.exceptions import AnswerPositionOverflow, QuizFinishedException
-from classroom.app.entities import Teacher
-from typing import List
+from typing import List, TYPE_CHECKING
+if TYPE_CHECKING:
+    from classroom.app.entities import Teacher
 
 
 class Question:
@@ -96,7 +97,7 @@ class Quiz:
         name of the quiz
     """
 
-    def __init__(self, quiz_id: str, teacher: Teacher, name: str) -> None:
+    def __init__(self, quiz_id: str, teacher: 'Teacher', name: str) -> None:
         """
         Parameters
         ----------
