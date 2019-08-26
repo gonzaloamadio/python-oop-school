@@ -19,6 +19,7 @@ ASSUMPTIONS:
 from classroom.app.exceptions import QuizFinishedException, SemesterNotFound
 from classroom.app.utils import get_semester_id
 from typing import List, Dict, NoReturn, Union, TYPE_CHECKING
+from classroom.app.quizzes import Quiz
 if TYPE_CHECKING: # pragma: no cover
     from classroom.app.quizzes import Quiz
     from classroom.app.courses import CourseRunning
@@ -192,3 +193,6 @@ class Teacher(Person):
     def get_teaching_courses(self):
         """Return a list of running courses the teacher is teaching in."""
         return self.classes
+
+    def create_quiz(self, qid: str, name: str) -> 'Quiz':
+        return Quiz(qid, self, name)

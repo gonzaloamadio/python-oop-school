@@ -6,6 +6,7 @@ from classroom.tests.factories import (
     QuestionFactory,
 )
 from classroom.tests.utils import BaseTestCase
+from classroom.app.quizzes import Quiz
 
 
 class StudentTests(BaseTestCase):
@@ -117,3 +118,8 @@ class TeacherTests(BaseTestCase):
         course = CourseRunningFactory()
         teacher.add_course_to_teach(course.get_code())
         self.assertIn(course.get_code(), teacher.get_teaching_courses())
+
+    def test_teacher_can_create_quiz(self):
+        q = self.teacher.create_quiz('myid', 'Math quiz')
+        self.assertIsInstance(q, Quiz)
+
