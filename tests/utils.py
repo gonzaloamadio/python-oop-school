@@ -3,7 +3,7 @@ from unittest import TestCase
 HAS_ATTR_MESSAGE = '\n {} \n should have attribute --> {}'
 
 
-class BaseTestCase(TestCase):
+class BaseTestCase(TestCase): # pragma: no cover
     def assertHasAttr(self, obj, attrname, message=None):
         if not hasattr(obj, attrname):
             if message is not None:

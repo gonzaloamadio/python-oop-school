@@ -144,6 +144,6 @@ class CourseTests(BaseTestCase):
         self.assertIn(crunning, self.course.get_runnings())
 
 
-if __name__ == '__main__':
+if __name__ == '__main__': # pragma: no cover
     import unittest
     unittest.main()

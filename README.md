@@ -54,7 +54,37 @@ This is pytest version 5.1.0, imported from /home/gonzalo/.virtualenvs/classroom
 
 ```
 $ cd classroom
-$ pytest --cov=classroom
+$ pytest --cov=classroom --cov-report term-missing
+```
+
+Output:
+
+```
+app/utils_test.py .                                        
+tests/courses_test.py ..............                       
+tests/entities_test.py ...........                         
+tests/quizzes_test.py ..........                           
+
+----------- coverage: platform linux, python 3.6.6-final-0 
+Name                     Stmts   Miss  Cover   Missing
+------------------------------------------------------
+__init__.py                  0      0   100%
+app/__init__.py              0      0   100%
+app/courses.py              48      0   100%
+app/entities.py             61      0   100%
+app/exceptions.py            8      0   100%
+app/quizzes.py              51      0   100%
+app/utils.py                 4      0   100%
+app/utils_test.py           10      0   100%
+tests/__init__.py            0      0   100%
+tests/courses_test.py       84      0   100%
+tests/entities_test.py      85      0   100%
+tests/factories.py          56      0   100%
+tests/quizzes_test.py       77      0   100%
+tests/utils.py               2      0   100%
+------------------------------------------------------
+TOTAL                      486      0   100%
+
 ```
 
 ### Run type check

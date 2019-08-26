@@ -18,7 +18,7 @@ ASSUMPTIONS:
     I consider them out of scope of the exercise.
 """
 from typing import Dict, List, TYPE_CHECKING
-if TYPE_CHECKING:
+if TYPE_CHECKING: # pragma: no cover
     from classroom.app.entities import Student, Teacher
     CoursesInfo = Dict[str, Course]
 

@@ -19,7 +19,7 @@ ASSUMPTIONS:
 from classroom.app.exceptions import QuizFinishedException, SemesterNotFound
 from classroom.app.utils import get_semester_id
 from typing import List, Dict, NoReturn, Union, TYPE_CHECKING
-if TYPE_CHECKING:
+if TYPE_CHECKING: # pragma: no cover
     from classroom.app.quizzes import Quiz
     from classroom.app.courses import CourseRunning
     QuizInfo = Dict[str, Quiz]
@@ -114,21 +114,22 @@ class Student(Person):
             raise SemesterNotFound('The semester was not found.')
         return current_semester_quiz_info
 
-    def answer_quizz(self, quiz_id: str, answer: int) -> Union[None, str]:
+    def answer_quizz(self, quiz_id: str, answer: int) -> str:
         """Answer a quizz for this semester."""
-        current_quizzes = self._get_semester_quizzes(get_semester_id())
+        try:
+            current_quizzes = self._get_semester_quizzes(get_semester_id())
+        except SemesterNotFound:
+            return "You are not subscribed to this quiz in current semester"
         quiz = current_quizzes.get(quiz_id) # type: ignore
         if not quiz:
             return "Quiz not defined"
         try:
             quiz.answer_next_question(answer)
         except QuizFinishedException as err:
-            return str(err)
-        except KeyError as err:
-            return str(err)
-        return None
+            return "Quiz already finished"
+        return "Ok"
 
-    def get_score_for_semester(self, semester_id: str) ->  float:
+    def get_score_for_semester(self, semester_id: str = None) ->  Union[str, float]:
         """Given a semester_id, get score for that semester.
 
         Raises
@@ -141,7 +142,12 @@ class Student(Person):
         score : int
             Score calculation for all quizzes of the semester.
         """
-        current_quizzes = self._get_semester_quizzes(semester_id)
+        if not semester_id:
+            semester_id = get_semester_id()
+        try:
+            current_quizzes = self._get_semester_quizzes(semester_id) # type: ignore
+        except SemesterNotFound:
+            return "You have not subscribed to any quiz in this semester"
         score = 0.0
         for qid in current_quizzes:
             score += current_quizzes[qid].get_score()

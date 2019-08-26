@@ -2,6 +2,8 @@ from classroom.tests.factories import (
     CourseRunningFactory,
     StudentFactory,
     TeacherFactory,
+    QuizFactory,
+    QuestionFactory,
 )
 from classroom.tests.utils import BaseTestCase
 
@@ -48,9 +50,39 @@ class StudentTests(BaseTestCase):
         # Check if after enrol, course was added to student list of courses
         self.assertIn(course.running_course_code, student.get_enroled_courses())
 
-    def student_can_answer_quizz(self):
-        # TODO
-        pass
+    def test_student_can_subscribe_to_quizz(self):
+        quiz = QuizFactory()
+        self.student.subscribe_to_quizz(quiz)
+
+    def test_student_can_answer_quizz(self):
+        student = self.student
+        res = student.answer_quizz('non_existent', 1)
+        assert res == "You are not subscribed to this quiz in current semester"
+        quiz = QuizFactory()
+        question = QuestionFactory()
+        question.add_possible_answer('2', 1, True)
+        quiz.add_question(question)
+        student.subscribe_to_quizz(quiz)
+        res = student.answer_quizz(quiz.quiz_id, 1)
+        assert res == "Ok"
+        res = student.answer_quizz('not_existent', 1)
+        assert res == "Quiz not defined"
+        res = student.answer_quizz(quiz.quiz_id, 1)
+        assert res == "Quiz already finished"
+
+    def test_student_can_get_score_for_semester(self):
+        student = self.student
+        res = student.get_score_for_semester('not_existent')
+        assert res == 'You have not subscribed to any quiz in this semester'
+        quiz = QuizFactory()
+        question = QuestionFactory()
+        question.add_possible_answer('2', 1, True)
+        quiz.add_question(question)
+        student.subscribe_to_quizz(quiz)
+        student.answer_quizz(quiz.quiz_id, 1)
+        res = student.get_score_for_semester()
+        assert res == 100.00
+
 
 
 class TeacherTests(BaseTestCase):

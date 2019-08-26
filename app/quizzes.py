@@ -12,7 +12,7 @@ ASSUMPTIONS:
 
 from classroom.app.exceptions import AnswerPositionOverflow, QuizFinishedException
 from typing import List, TYPE_CHECKING
-if TYPE_CHECKING:
+if TYPE_CHECKING: # pragma: no cover
     from classroom.app.entities import Teacher
 
 
