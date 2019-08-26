@@ -48,6 +48,10 @@ class StudentTests(BaseTestCase):
         # Check if after enrol, course was added to student list of courses
         self.assertIn(course.running_course_code, student.get_enroled_courses())
 
+    def student_can_answer_quizz(self):
+        # TODO
+        pass
+
 
 class TeacherTests(BaseTestCase):
     @classmethod

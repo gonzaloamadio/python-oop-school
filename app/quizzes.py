@@ -11,6 +11,8 @@ ASSUMPTIONS:
 """
 
 from classroom.app.exceptions import AnswerPositionOverflow, QuizFinishedException
+from classroom.app.entities import Teacher
+from typing import List
 
 
 class Question:
@@ -31,7 +33,7 @@ class Question:
         is this question answered and correct?
     """
 
-    def __init__(self, text):
+    def __init__(self, text: str) -> None:
         """
         Parameters
         ----------
@@ -39,13 +41,14 @@ class Question:
             question
         """
         self.text = text
-        self._correct_answer = 1
-        self.possible_answers = [None] * 4
-        self.is_answered = False
-        self.is_answered_correct = False
+        self._correct_answer: int = 1
+        self.possible_answers: List[str] = [''] * 4
+        self.is_answered: bool = False
+        self.is_answered_correct: bool = False
 
     @property
-    def correct_answer(self):
+    def correct_answer(self) -> int:
+        """Return the position where the correct answer is in."""
         return self._correct_answer
 
     #    @correct_answer.setter
@@ -54,8 +57,13 @@ class Question:
     #            raise AnswerPositionOverflow("Choices can be between 1 and 4")
     #        self._correct_answer = num
 
-    def add_possible_answer(self, answer, position, is_correct):
-        """Add a possible answer in a position (1, 2, 3, 4)."""
+    def add_possible_answer(self, answer: str, position: int, is_correct: bool) -> bool:
+        """Add a possible answer in a position (1, 2, 3, 4).i
+
+        Raises
+        ------
+        AnswerPositionOverflow
+        """
         if not (0 < position <= 4):
             raise AnswerPositionOverflow("Position must be between 1 and 4")
         else:
@@ -63,7 +71,8 @@ class Question:
             self._correct_answer = position
             return True
 
-    def is_answer_correct(self, answer):
+    def is_answer_correct(self, answer: int) -> bool:
+        """Check if the selected answer is the correct one."""
         return answer == self.correct_answer
 
 
@@ -75,35 +84,53 @@ class Quiz:
 
     Atribute
     --------
-    test : str
-        answer of a question
-    question : Question
-        questions that make this quiz
+    quiz_id : str
+        id of this quiz
+    teacher : Teacher
+        Teacher that created this quiz
     _is_finished : bool
         is the quizz finished?
+    questions : [Question]
+        List of questions belonging to this quiz
+    name : str
+        name of the quiz
     """
 
-    def __init__(self, quiz_id, teacher, name):
+    def __init__(self, quiz_id: str, teacher: Teacher, name: str) -> None:
+        """
+        Parameters
+        ----------
+        quiz_id : str
+            id of this quiz
+        teacher : Teacher
+            Teacher that created this quiz
+        name : str
+            name of the quiz
+        """
         self.quiz_id = quiz_id
         self.teacher = teacher
         self.name = name
-        self.questions = []
-        self._is_finished = False
+        self.questions: List[Question] = []
+        self._is_finished: bool = False
 
     @property
     def is_finished(self):
+        """Is this quiz completed?."""
         return self._is_finished
 
     def add_question(self, q: Question) -> None:
+        """Add a question to this quiz."""
         self.questions.append(q)
         self._is_finished = False
 
     def _is_quiz_finished(self) -> bool:
+        """Compute if the quiz is finished."""
         # Check if there is a question that is not answered
         question = next((q for q in self.questions if q.is_answered is False), None)
         return question is not None
 
     def answer_next_question(self, answer: int) -> None:
+        """Answer next unanswered question."""
         # Get first question not answered, we can continue an unifinished quizz
         question = next((q for q in self.questions if q.is_answered is False), None)
         if question is None or self.is_finished:
@@ -117,7 +144,8 @@ class Quiz:
         if not self._is_quiz_finished():
             self._is_finished = True
 
-    def get_score(self):
+    def get_score(self) -> float:
+        """Compute score for this quiz."""
         if not self.questions:
             return 0
         total_questions = len(self.questions)
