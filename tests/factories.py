@@ -1,8 +1,8 @@
 import factory
 
-from app.courses import Course, CourseRunning, Department
-from app.entities import Student, Teacher
-from app.quizzes import Question, Quiz
+from classroom.app.courses import Course, CourseRunning, Department
+from classroom.app.entities import Student, Teacher
+from classroom.app.quizzes import Question, Quiz
 
 
 class StudentFactory(factory.Factory):

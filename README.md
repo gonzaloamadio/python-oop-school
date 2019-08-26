@@ -50,9 +50,9 @@ $ pytest --version
 This is pytest version 5.1.0, imported from /home/gonzalo/.virtualenvs/classroom/lib/python3.6/site-packages/pytest.py
 ```
 
-### Run tests
+### Run tests and coverage
 
 ```
 $ cd classroom
-$ pytest
+$ pytest --cov=classroom
 ````

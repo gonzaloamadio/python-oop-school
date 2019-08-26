@@ -1,9 +1,9 @@
-from tests.factories import (
+from classroom.tests.factories import (
     CourseRunningFactory,
     StudentFactory,
     TeacherFactory,
 )
-from tests.utils import BaseTestCase
+from classroom.tests.utils import BaseTestCase
 
 
 class StudentTests(BaseTestCase):

@@ -10,7 +10,7 @@ ASSUMPTIONS:
     Question is the set of question and possible answers.Could be more granular
 """
 
-from app.exceptions import AnswerPositionOverflow, QuizFinishedException
+from classroom.app.exceptions import AnswerPositionOverflow, QuizFinishedException
 
 
 class Question:

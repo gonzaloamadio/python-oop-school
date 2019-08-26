@@ -1,13 +1,13 @@
 """Tests related with entities belonging to a school."""
 
-from tests.factories import (
+from classroom.tests.factories import (
     CourseFactory,
     CourseRunningFactory,
     DepartmentFactory,
     StudentFactory,
     TeacherFactory,
 )
-from tests.utils import BaseTestCase
+from classroom.tests.utils import BaseTestCase
 
 
 class DepartmentTests(BaseTestCase):
@@ -47,7 +47,7 @@ class DepartmentTests(BaseTestCase):
         """Test: Mark a course as running.
         A course can be a course as an idea, and also be teached some year.
         """
-        from app.courses import CourseRunning
+        from classroom.app.courses import CourseRunning
 
         department = self.department
         course = CourseFactory()

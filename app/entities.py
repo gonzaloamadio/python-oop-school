@@ -16,8 +16,8 @@ ASSUMPTIONS:
     I assumed that the grade of the students is the sum of the grades of the
     quizzes they have completed.
 """
-from app.exceptions import QuizFinishedException, SemesterNotFound
-from app.utils import get_semester_id
+from classroom.app.exceptions import QuizFinishedException, SemesterNotFound
+from classroom.app.utils import get_semester_id
 
 
 class Person(object):

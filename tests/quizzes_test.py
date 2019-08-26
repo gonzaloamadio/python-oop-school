@@ -1,13 +1,13 @@
 """Test related with quizzes."""
 
-from app.entities import Teacher
-from app.exceptions import AnswerPositionOverflow, QuizFinishedException
-from tests.factories import (
+from classroom.app.entities import Teacher
+from classroom.app.exceptions import AnswerPositionOverflow, QuizFinishedException
+from classroom.tests.factories import (
     QuestionFactory,
     QuizFactory,
     RandomQuestionFactory,
 )
-from tests.utils import BaseTestCase
+from classroom.tests.utils import BaseTestCase
 
 
 class QuizTests(BaseTestCase):
